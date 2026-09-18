@@ -76,10 +76,10 @@ ansible-vault view inventory/secrets/luks.yml
 ```yaml
 all:
   children:
-    prepared_servers:
+    luks_servers:
       hosts:
-        test-vm01:
-          luks_device: /dev/vdb
+        target-vm01:
+          luks_device: /dev/xvdf
 ```
 
 Переменные passphrase и подтверждения можно добавить в group vars:
