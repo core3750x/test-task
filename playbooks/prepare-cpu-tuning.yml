@@ -5,3 +5,38 @@
 
   roles:
     - role: cpu_tuning
+
+  tasks:
+    - name: ensure CPU information is available
+      ansible.builtin.assert:
+        that:
+          - ansible_facts.processor is defined
+          - ansible_facts.processor | length > 0
+          - ansible_facts.processor_vcpus is defined
+          - ansible_facts.processor_cores is defined
+          - ansible_facts.processor_threads_per_core is defined
+        fail_msg: CPU information is not available in gathered facts
+
+    - name: ensure Intel threading information is identified
+      ansible.builtin.set_fact:
+        cpu_threading_name: Intel Hyper-Threading
+      when: ansible_facts.processor[0] is search('Intel', ignorecase=true)
+
+    - name: ensure AMD threading information is identified
+      ansible.builtin.set_fact:
+        cpu_threading_name: AMD multithreading
+      when: ansible_facts.processor[0] is search('AMD', ignorecase=true)
+
+    - name: ensure generic threading information is identified
+      ansible.builtin.set_fact:
+        cpu_threading_name: CPU multithreading
+      when: cpu_threading_name is not defined
+
+    - name: ensure CPU and threading information is displayed
+      ansible.builtin.debug:
+        msg:
+          CPUs: "{{ ansible_facts.processor }}"
+          logical_cpus: "{{ ansible_facts.processor_vcpus }}"
+          cores: "{{ ansible_facts.processor_cores }}"
+          threads_per_core: "{{ ansible_facts.processor_threads_per_core }}"
+          threading: "{{ cpu_threading_name }}: {{ 'enabled' if ansible_facts.processor_threads_per_core > 1 else 'disabled' }}"
