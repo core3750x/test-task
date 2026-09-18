@@ -1,0 +1,14 @@
+- name: ensure tuned package is installed
+  ansible.builtin.import_tasks: install.yml
+
+- name: ensure tuned profile is configured
+  ansible.builtin.import_tasks: profile.yml
+
+- name: ensure tuned service is active
+  ansible.builtin.import_tasks: service.yml
+
+- name: ensure tuned profile is active
+  ansible.builtin.import_tasks: activate.yml
+
+- name: ensure tuned profile is verified
+  ansible.builtin.import_tasks: verify.yml

@@ -1,0 +1,4 @@
+- name: ensure tuned package is installed
+  ansible.builtin.package:
+    name: "{{ cpu_tuned_package }}"
+    state: present

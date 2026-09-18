@@ -1,0 +1,17 @@
+- name: ensure tuned profile directory exists
+  ansible.builtin.file:
+    path: "{{ cpu_tuned_profile_directory }}"
+    state: directory
+    mode: '0755'
+
+- name: ensure tuned CPU profile is configured
+  ansible.builtin.copy:
+    dest: "{{ cpu_tuned_profile_directory }}/tuned.conf"
+    content: |
+      [main]
+      summary={{ cpu_tuned_profile_summary }}
+
+      [cpu]
+      governor={{ cpu_tuned_governor }}
+      force_latency={{ cpu_tuned_force_latency }}
+    mode: '0644'

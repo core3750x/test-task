@@ -1,0 +1,7 @@
+cpu_tuned_package: tuned
+cpu_tuned_service: tuned
+cpu_tuned_profile_name: ansible-cpu-performance
+cpu_tuned_profile_directory: /etc/tuned/ansible-cpu-performance
+cpu_tuned_profile_summary: CPU performance profile
+cpu_tuned_governor: performance
+cpu_tuned_force_latency: 0

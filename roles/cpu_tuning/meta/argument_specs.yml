@@ -1,0 +1,18 @@
+argument_specs:
+  main:
+    short_description: configure CPU performance settings with TuneD
+    options:
+      cpu_tuned_package:
+        type: str
+      cpu_tuned_service:
+        type: str
+      cpu_tuned_profile_name:
+        type: str
+      cpu_tuned_profile_directory:
+        type: path
+      cpu_tuned_profile_summary:
+        type: str
+      cpu_tuned_governor:
+        type: str
+      cpu_tuned_force_latency:
+        type: int

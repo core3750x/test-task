@@ -1,0 +1,17 @@
+- name: ensure active tuned profile is collected
+  ansible.builtin.command:
+    argv:
+      - tuned-adm
+      - active
+  register: cpu_tuned_active_profile
+  changed_when: false
+  check_mode: false
+
+- name: ensure configured tuned profile is active
+  ansible.builtin.command:
+    argv:
+      - tuned-adm
+      - profile
+      - "{{ cpu_tuned_profile_name }}"
+  when: "cpu_tuned_active_profile.stdout | trim != 'Current active profile: ' ~ cpu_tuned_profile_name"
+  changed_when: true

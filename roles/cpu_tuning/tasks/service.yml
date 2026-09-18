@@ -1,0 +1,5 @@
+- name: ensure tuned service is enabled and started
+  ansible.builtin.service:
+    name: "{{ cpu_tuned_service }}"
+    enabled: true
+    state: started

@@ -1,0 +1,13 @@
+- name: ensure tuned profile settings are verified
+  ansible.builtin.command:
+    argv:
+      - tuned-adm
+      - verify
+  register: cpu_tuned_verification
+  changed_when: false
+  failed_when: false
+  check_mode: false
+
+- name: ensure tuned verification result is displayed
+  ansible.builtin.debug:
+    msg: "{{ cpu_tuned_verification.stdout | trim }}"
