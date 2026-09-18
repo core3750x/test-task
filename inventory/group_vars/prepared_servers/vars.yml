@@ -1,0 +1,2 @@
+luks_passphrase: "{{ vault_luks_passphrase }}"
+luks_confirm: true

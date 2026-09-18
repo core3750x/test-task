@@ -1,4 +1,5 @@
 luks_mapper_name: data_crypt
+luks_type: luks2
 luks_mount_point: /data
 luks_filesystem: ext4
 luks_confirm: false

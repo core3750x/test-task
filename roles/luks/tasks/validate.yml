@@ -13,13 +13,13 @@
 - name: ensure root device is identified
   ansible.builtin.assert:
     that:
-      - ansible_mounts | selectattr('mount', 'equalto', '/') | list | length == 1
+      - ansible_facts["mounts"] | selectattr('mount', 'equalto', '/') | list | length == 1
     fail_msg: gathered facts must contain the root filesystem mount
 
 - name: ensure root device is collected
   ansible.builtin.set_fact:
     luks_root_device: >-
-      {{ ansible_mounts | selectattr('mount', 'equalto', '/') | map(attribute='device') | list | first }}
+      {{ ansible_facts["mounts"] | selectattr('mount', 'equalto', '/') | map(attribute='device') | list | first }}
 
 - name: ensure root device information is available
   ansible.builtin.assert:
@@ -54,7 +54,7 @@
 - name: ensure luks device is not mounted
   ansible.builtin.assert:
     that:
-      - luks_device not in (ansible_mounts | map(attribute='device') | list)
+      - luks_device not in (ansible_facts["mounts"] | map(attribute='device') | list)
     fail_msg: "{{ luks_device }} is mounted and cannot be encrypted"
 
 - name: ensure luks device is not the root device

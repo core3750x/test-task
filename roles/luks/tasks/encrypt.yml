@@ -1,1 +1,14 @@
----
+- name: ensure luks container is opened
+  community.crypto.luks_device:
+    device: "{{ luks_device }}"
+    state: opened
+    name: "{{ luks_mapper_name }}"
+    type: "{{ luks_type }}"
+    passphrase: "{{ luks_passphrase }}"
+  no_log: true
+
+- name: ensure luks crypttab entry is present
+  community.general.crypttab:
+    name: "{{ luks_mapper_name }}"
+    backing_device: "{{ luks_device }}"
+    state: present

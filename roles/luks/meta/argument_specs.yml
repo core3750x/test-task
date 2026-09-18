@@ -11,6 +11,8 @@ argument_specs:
         no_log: true
       luks_mapper_name:
         type: str
+      luks_type:
+        type: str
       luks_mount_point:
         type: path
       luks_filesystem:

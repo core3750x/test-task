@@ -1,1 +1,18 @@
----
+- name: ensure luks filesystem is created
+  community.general.filesystem:
+    dev: "/dev/mapper/{{ luks_mapper_name }}"
+    fstype: "{{ luks_filesystem }}"
+
+- name: ensure luks mount point exists
+  ansible.builtin.file:
+    path: "{{ luks_mount_point }}"
+    state: directory
+    mode: '0755'
+
+- name: ensure luks filesystem is mounted
+  ansible.posix.mount:
+    path: "{{ luks_mount_point }}"
+    src: "/dev/mapper/{{ luks_mapper_name }}"
+    fstype: "{{ luks_filesystem }}"
+    opts: defaults
+    state: mounted

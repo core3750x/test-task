@@ -1,1 +1,5 @@
----
+- name: ensure luks packages are installed
+  ansible.builtin.apt:
+    name: "{{ luks_packages }}"
+    state: present
+    update_cache: true
