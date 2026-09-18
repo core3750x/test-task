@@ -1,0 +1,11 @@
+- name: prepare encrypted storage
+  hosts: prepared_servers
+  become: true
+  gather_facts: true
+
+  vars_files:
+    - ../inventory/secrets/luks.yml
+    - ../inventory/luks_vars.yml
+
+  roles:
+    - role: luks

@@ -1,0 +1,7 @@
+- name: prepare CPU settings
+  hosts: cpu_performance_servers
+  become: true
+  gather_facts: true
+
+  roles:
+    - role: cpu_tuning
