@@ -43,13 +43,13 @@ luks_packages:
 Passphrase LUKS не хранится в открытом виде. Он находится в зашифрованном файле:
 
 ```text
-inventory/group_vars/prepared_servers/vault.yml
+inventory/secrets/luks.yml
 ```
 
 Файл создаётся командой:
 
 ```bash
-ansible-vault create inventory/group_vars/prepared_servers/vault.yml
+ansible-vault create inventory/secrets/luks.yml
 ```
 
 В файл записывается:
@@ -58,7 +58,7 @@ ansible-vault create inventory/group_vars/prepared_servers/vault.yml
 vault_luks_passphrase: "пароль-для-LUKS"
 ```
 
-Связь с переменной роли задана в файле `inventory/group_vars/prepared_servers/vars.yml`:
+Связь с переменной роли задана в файле `inventory/luks_vars.yml`:
 
 ```yaml
 luks_passphrase: "{{ vault_luks_passphrase }}"
@@ -68,7 +68,7 @@ luks_confirm: true
 Посмотреть расшифрованное содержимое можно командой:
 
 ```bash
-ansible-vault view inventory/group_vars/prepared_servers/vault.yml
+ansible-vault view inventory/secrets/luks.yml
 ```
 
 ## Пример inventory
@@ -91,13 +91,17 @@ luks_confirm: true
 
 ## Запуск
 
-Роль подключается в playbook так:
+Роль подключается в `playbooks/prepare-luks.yml`:
 
 ```yaml
-- name: prepare operating system
+- name: prepare encrypted storage
   hosts: prepared_servers
   become: true
   gather_facts: true
+
+  vars_files:
+    - ../inventory/secrets/luks.yml
+    - ../inventory/luks_vars.yml
 
   roles:
     - role: luks
@@ -108,7 +112,7 @@ luks_confirm: true
 ```bash
 ansible-playbook \
   -i inventory/hosts.yml \
-  playbooks/prepare-os.yml \
+  playbooks/prepare-luks.yml \
   --ask-vault-pass \
   --check \
   --diff
@@ -119,7 +123,7 @@ ansible-playbook \
 ```bash
 ansible-playbook \
   -i inventory/hosts.yml \
-  playbooks/prepare-os.yml \
+  playbooks/prepare-luks.yml \
   --ask-vault-pass
 ```
 

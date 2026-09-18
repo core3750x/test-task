@@ -15,6 +15,12 @@ Ansible modules are versioned as part of their collections. The project uses the
 - `community.crypto`: 3.4.0
 - `community.general`: 13.4.0
 
+The versions are pinned in `collections/requirements.yml`. Install them with:
+
+```bash
+ansible-galaxy collection install -r collections/requirements.yml
+```
+
 ## Planned modules
 
 - `community.crypto.luks_device` for LUKS operations
