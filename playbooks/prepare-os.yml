@@ -1,7 +1,0 @@
-- name: prepare operating system
-  hosts: prepared_servers
-  become: true
-  gather_facts: true
-
-  roles:
-    - role: luks

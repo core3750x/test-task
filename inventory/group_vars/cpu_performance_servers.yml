@@ -1,0 +1,2 @@
+cpu_tuned_governor: performance
+cpu_tuned_force_latency: 0
