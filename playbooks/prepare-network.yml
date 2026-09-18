@@ -1,5 +1,5 @@
 - name: prepare network interface
-  hosts: network_rename_servers
+  hosts: network_netplan_servers
   become: true
   gather_facts: true
 
