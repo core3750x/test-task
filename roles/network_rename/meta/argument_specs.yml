@@ -1,0 +1,12 @@
+argument_specs:
+  main:
+    short_description: rename the active network interface with systemd
+    options:
+      network_rename_name:
+        type: str
+      network_rename_link_file:
+        type: path
+      network_rename_use_netplan:
+        type: bool
+      network_rename_reboot:
+        type: bool

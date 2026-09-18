@@ -1,0 +1,4 @@
+network_rename_name: net0
+network_rename_link_file: /etc/systemd/network/10-net0.link
+network_rename_use_netplan: true
+network_rename_reboot: true

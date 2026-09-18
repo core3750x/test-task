@@ -1,0 +1,4 @@
+- name: reboot after network interface rename
+  ansible.builtin.reboot:
+    reboot_timeout: 600
+  when: network_rename_reboot

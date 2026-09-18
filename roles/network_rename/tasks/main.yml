@@ -1,0 +1,116 @@
+- name: ensure active network interface is identified
+  ansible.builtin.assert:
+    that:
+      - ansible_facts.default_ipv4.interface is defined
+      - ansible_facts.default_ipv4.interface != 'lo'
+      - ansible_facts[ansible_facts.default_ipv4.interface].macaddress is defined
+    fail_msg: active network interface and its MAC address could not be identified
+
+- name: ensure active network interface facts are collected
+  ansible.builtin.set_fact:
+    network_rename_active_interface: "{{ ansible_facts.default_ipv4.interface }}"
+    network_rename_active_mac: "{{ ansible_facts[ansible_facts.default_ipv4.interface].macaddress }}"
+
+- name: ensure netplan directory information is collected
+  ansible.builtin.stat:
+    path: /etc/netplan
+  register: network_rename_netplan_directory
+  when: network_rename_use_netplan
+
+- name: ensure netplan files are collected
+  ansible.builtin.find:
+    paths: /etc/netplan
+    patterns:
+      - '*.yaml'
+      - '*.yml'
+    file_type: file
+  register: network_rename_netplan_files
+  when:
+    - network_rename_use_netplan
+    - network_rename_netplan_directory.stat.isdir
+
+- name: ensure netplan file list is initialized
+  ansible.builtin.set_fact:
+    network_rename_netplan_paths: []
+  when: network_rename_use_netplan
+
+- name: ensure netplan file paths are collected
+  ansible.builtin.set_fact:
+    network_rename_netplan_paths: "{{ network_rename_netplan_files.files | map(attribute='path') | list }}"
+  when:
+    - network_rename_use_netplan
+    - network_rename_netplan_directory.stat.isdir
+
+- name: ensure netplan configuration is available
+  ansible.builtin.assert:
+    that:
+      - network_rename_netplan_directory.stat.isdir
+      - network_rename_netplan_paths | length > 0
+    fail_msg: netplan mode is enabled but no netplan YAML files were found
+  when: network_rename_use_netplan
+
+- name: ensure netplan interface name is updated
+  ansible.builtin.replace:
+    path: "{{ network_rename_netplan_path }}"
+    regexp: "^(\\s*){{ network_rename_active_interface | regex_escape }}:(\\s*)$"
+    replace: "\\1{{ network_rename_name }}:\\2"
+  loop: "{{ network_rename_netplan_paths }}"
+  loop_control:
+    loop_var: network_rename_netplan_path
+  when:
+    - network_rename_use_netplan
+    - network_rename_netplan_directory.stat.isdir
+    - network_rename_active_interface != network_rename_name
+  notify: reboot after network interface rename
+
+- name: ensure netplan set-name is updated
+  ansible.builtin.replace:
+    path: "{{ network_rename_netplan_path }}"
+    regexp: "set-name:\\s*[\"']?{{ network_rename_active_interface | regex_escape }}[\"']?"
+    replace: "set-name: \"{{ network_rename_name }}\""
+  loop: "{{ network_rename_netplan_paths }}"
+  loop_control:
+    loop_var: network_rename_netplan_path
+  when:
+    - network_rename_use_netplan
+    - network_rename_netplan_directory.stat.isdir
+    - network_rename_active_interface != network_rename_name
+  notify: reboot after network interface rename
+
+- name: ensure systemd link rule is configured
+  ansible.builtin.copy:
+    dest: "{{ network_rename_link_file }}"
+    content: |
+      [Match]
+      MACAddress={{ network_rename_active_mac }}
+
+      [Link]
+      Name={{ network_rename_name }}
+    owner: root
+    group: root
+    mode: '0644'
+  when: not network_rename_use_netplan
+  notify: reboot after network interface rename
+
+- name: ensure unused systemd link rule is absent
+  ansible.builtin.file:
+    path: "{{ network_rename_link_file }}"
+    state: absent
+  when: network_rename_use_netplan
+  notify: reboot after network interface rename
+
+- name: ensure pending network rename is applied
+  ansible.builtin.meta: flush_handlers
+
+- name: ensure network facts are refreshed
+  ansible.builtin.setup:
+    gather_subset:
+      - network
+
+- name: ensure renamed network interface information is displayed
+  ansible.builtin.debug:
+    msg:
+      interface: "{{ ansible_facts.default_ipv4.interface }}"
+      macaddress: "{{ ansible_facts[ansible_facts.default_ipv4.interface].macaddress }}"
+      address: "{{ ansible_facts.default_ipv4.address }}"
+      gateway: "{{ ansible_facts.default_ipv4.gateway }}"
