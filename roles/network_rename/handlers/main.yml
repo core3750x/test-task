@@ -1,4 +1,14 @@
+- name: apply netplan configuration
+  ansible.builtin.command:
+    argv:
+      - netplan
+      - apply
+  changed_when: true
+  when: network_rename_use_netplan
+
 - name: reboot after network interface rename
   ansible.builtin.reboot:
     reboot_timeout: 600
-  when: network_rename_reboot
+  when:
+    - not network_rename_use_netplan
+    - network_rename_reboot

@@ -61,7 +61,7 @@
     - network_rename_use_netplan
     - network_rename_netplan_directory.stat.isdir
     - network_rename_active_interface != network_rename_name
-  notify: reboot after network interface rename
+  notify: apply netplan configuration
 
 - name: ensure netplan set-name is updated
   ansible.builtin.replace:
@@ -75,7 +75,7 @@
     - network_rename_use_netplan
     - network_rename_netplan_directory.stat.isdir
     - network_rename_active_interface != network_rename_name
-  notify: reboot after network interface rename
+  notify: apply netplan configuration
 
 - name: ensure systemd link rule is configured
   ansible.builtin.copy:
@@ -97,7 +97,6 @@
     path: "{{ network_rename_link_file }}"
     state: absent
   when: network_rename_use_netplan
-  notify: reboot after network interface rename
 
 - name: ensure pending network rename is applied
   ansible.builtin.meta: flush_handlers
