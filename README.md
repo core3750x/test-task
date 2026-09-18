@@ -1,6 +1,6 @@
 # test-task
 
-## управляющий узел
+## Компоненты
 
 - Ansible community package: 14.4.0
 - ansible-core: 2.21.4
