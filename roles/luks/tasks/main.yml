@@ -1,0 +1,11 @@
+- name: ensure luks validation is applied
+  ansible.builtin.import_tasks: validate.yml
+
+- name: ensure luks packages are installed
+  ansible.builtin.import_tasks: install.yml
+
+- name: ensure luks encryption is configured
+  ansible.builtin.import_tasks: encrypt.yml
+
+- name: ensure luks filesystem is mounted
+  ansible.builtin.import_tasks: mount.yml

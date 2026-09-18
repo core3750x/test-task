@@ -1,0 +1,7 @@
+luks_mapper_name: data_crypt
+luks_mount_point: /data
+luks_filesystem: ext4
+luks_confirm: false
+luks_packages:
+  - cryptsetup
+  - e2fsprogs

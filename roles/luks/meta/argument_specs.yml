@@ -1,0 +1,22 @@
+argument_specs:
+  main:
+    short_description: manage a LUKS encrypted storage device
+    options:
+      luks_device:
+        type: str
+        required: true
+      luks_passphrase:
+        type: str
+        required: true
+        no_log: true
+      luks_mapper_name:
+        type: str
+      luks_mount_point:
+        type: path
+      luks_filesystem:
+        type: str
+      luks_confirm:
+        type: bool
+      luks_packages:
+        type: list
+        elements: str
