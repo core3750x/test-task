@@ -1,0 +1,7 @@
+- name: prepare network interface
+  hosts: network_rename_servers
+  become: true
+  gather_facts: true
+
+  roles:
+    - role: network_rename
