@@ -95,7 +95,7 @@ luks_confirm: true
 
 ```yaml
 - name: prepare encrypted storage
-  hosts: prepared_servers
+  hosts: luks_servers
   become: true
   gather_facts: true
 
